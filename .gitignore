@@ -1,0 +1,15 @@
+# Kompilerad kod
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio-specifikt
+.vs/
+*.user
+*.suo
+
+# NuGet-paket
+packages/
+
+# OS-skräp
+Thumbs.db
+.DS_Store

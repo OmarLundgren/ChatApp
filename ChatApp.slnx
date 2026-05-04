@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="ChatApp.AppHost/ChatApp.AppHost.csproj" />
+  <Project Path="ChatApp.Server/ChatApp.Server.csproj" />
+  <Project Path="frontend/frontend.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+</Solution>
