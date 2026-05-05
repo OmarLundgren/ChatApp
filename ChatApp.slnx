@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+  </Folder>
   <Project Path="ChatApp.AppHost/ChatApp.AppHost.csproj" />
   <Project Path="ChatApp.Server/ChatApp.Server.csproj" />
   <Project Path="frontend/frontend.esproj">
