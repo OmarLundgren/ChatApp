@@ -10,7 +10,12 @@ export default defineConfig({
       '/api': {
         target: process.env.SERVER_HTTPS || process.env.SERVER_HTTP,
         changeOrigin: true
-      }
+          },
+        '/chatHub': {
+            target: 'https://localhost:7548',
+            secure: false,
+            ws: true,
+        }
     }
   }
 })
