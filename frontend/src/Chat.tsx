@@ -1,19 +1,30 @@
 import React, { useEffect, useState, useRef } from 'react';
 import * as signalR from '@microsoft/signalr';
+import { useNavigate } from 'react-router-dom';
+
 
 interface ChatMessage {
     sender: string;
     message: string;
     timestamp: string;
 }
-const MY_NAME = "Omar";
+
 
 function Chat() {
+    const navigate = useNavigate();
     const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
-    const [userInput, setUserInput] = useState('');
     const [messageInput, setMessageInput] = useState('');
     const bottomRef = useRef<HTMLDivElement>(null);
+    const username = sessionStorage.getItem('username') ?? 'Anonym'; 
+
+
+
+    useEffect(() => {
+        if (username === 'Anonym') {
+            navigate('/');   // skicka tillbaka till login om inget namn finns
+        }
+    }, []);
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -54,7 +65,7 @@ function Chat() {
 
         if (!connection) return;
         try {
-            await connection.invoke("SendMessage", MY_NAME, messageInput);
+            await connection.invoke("SendMessage", username, messageInput);
         }
         catch (err) {
             console.error(err);
@@ -66,7 +77,7 @@ function Chat() {
             {/* Meddelanden */}
             <div style={{ flex: 1, overflowY: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: "10px" }}>
                 {messages.map((msg) => {
-                    const isMine = msg.sender === MY_NAME;
+                    const isMine = msg.sender === username;
                     return (
                         <div key={msg.timestamp + msg.sender} style={{ display: "flex", justifyContent: isMine ? "flex-end" : "flex-start" }}>
                             <div style={{ maxWidth: "70%", display: "flex", flexDirection: "column", alignItems: isMine ? "flex-end" : "flex-start", gap: "3px" }}>
