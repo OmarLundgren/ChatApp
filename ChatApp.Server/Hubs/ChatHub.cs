@@ -49,5 +49,19 @@ namespace ChatApp.Server.Hubs
             await Clients.All.SendAsync("UserStatus", $"Användare (ID: {user}) har lämnat chatten.");
             await base.OnDisconnectedAsync(exp  );
         }
+        public async Task UpdateTeacherTyping(bool typing)
+        {
+            var user = _users.GetValueOrDefault(Context.ConnectionId, "Anonym");
+
+            var status = typing ? "..." : "";
+            await Clients.AllExcept(Context.ConnectionId).SendAsync("TeacherTyping", status, user);
+        }
+        public async Task UpdateUserTyping(bool typing)
+        {
+            var user = _users.GetValueOrDefault(Context.ConnectionId, "Anonym");
+
+            var status = typing ? "..." : "";
+            await Clients.AllExcept(Context.ConnectionId).SendAsync("UserTyping", status, user);
+        }
     }
 }
