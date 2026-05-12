@@ -53,14 +53,14 @@ namespace ChatApp.Server.Hubs
         {
             var user = _users.GetValueOrDefault(Context.ConnectionId, "Anonym");
 
-            var status = typing ? "..." : "";
+            var status = typing ? $" {user} skriver..." : "";
             await Clients.AllExcept(Context.ConnectionId).SendAsync("TeacherTyping", status, user);
         }
         public async Task UpdateUserTyping(bool typing)
         {
             var user = _users.GetValueOrDefault(Context.ConnectionId, "Anonym");
 
-            var status = typing ? "..." : "";
+            var status = typing ? $" {user} skriver..." : "";
             await Clients.AllExcept(Context.ConnectionId).SendAsync("UserTyping", status, user);
         }
     }

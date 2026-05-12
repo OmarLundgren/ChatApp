@@ -22,7 +22,7 @@ function Chat() {
     const [teacherMessages, setTeacherMessages] = useState<ChatMessage[]>([]);
     const role = sessionStorage.getItem('role') ?? 'user';
     const [teacherIndicator, setTeacherIndicator] = useState('');
-    const [userTypingIndicator, setUserTypingIndicator] = useState('');
+    const [userIndicator, setUserIndicator] = useState('');
 
 
 
@@ -67,7 +67,7 @@ function Chat() {
                         setTeacherIndicator(`${status}`);
                     });
                     connection.on("UserTyping", (status: string, user: string) => {
-                        setUserTypingIndicator(`${status}`);
+                        setUserIndicator(`${status}`);
                     });
                 })
                 .catch(e => console.log("Anslutning misslyckades: ", e));
@@ -104,18 +104,20 @@ function Chat() {
 
     function handleTeacherTyping() {
         connection?.invoke("UpdateTeacherTyping", true);
-    }
 
-    function handleTeacherStoppedTyping() {
-        connection?.invoke("UpdateTeacherTyping", false);
+        setTimeout(() => {
+            connection?.invoke("UpdateTeacherTyping", false);
+        }, 1000);
     }
     function handleTyping() {
-        connection?.invoke("UpdateUserTyping", true);    
+        connection?.invoke("UpdateUserTyping", true);   
+
+        setTimeout(() => {
+            connection?.invoke("UpdateUserTyping", false);
+        }, 1000);
     }   
 
-    function handleStoppedTyping() {
-        connection?.invoke("UpdateUserTyping", false);
-    }
+   
 
 
     return (
@@ -162,16 +164,29 @@ function Chat() {
                             </div>
                         </div>
                     )}
+                    {userIndicator && (
+                        <div
+                            style={{
+                                fontSize: "13px",
+                                color: "#6b7280",
+                                fontStyle: "italic",
+                                marginTop: "4px"
+                            }}
+                        >
+                            {userIndicator}
+                        </div>
+                    )}
                     <div ref={bottomRef} />
                 </div>
 
                 {/* Inputfält */}
                 <form onSubmit={SendMessage} style={{ display: "flex", gap: "8px", padding: "12px", borderTop: "1px solid #e5e7eb" }}>
                     <input
-                        onKeyUp={handleTyping}
-                        onBlur={handleStoppedTyping}
                         value={messageInput}
-                        onChange={(e) => setMessageInput(e.target.value)}
+                        onChange={(e) => {
+                            setMessageInput(e.target.value);
+                            handleTyping();
+                        }}
                         placeholder="Skriv ett meddelande..."
                         style={{ flex: 1, padding: "9px 14px", borderRadius: "999px", border: "1px solid #e5e7eb", fontSize: "14px", outline: "none" }}
                     />
@@ -208,15 +223,28 @@ function Chat() {
                             </div>
                         );
                     })}
+                    {teacherIndicator && (
+                        <div
+                            style={{
+                                fontSize: "13px",
+                                color: "#6b7280",
+                                fontStyle: "italic",
+                                marginTop: "4px"
+                            }}
+                        >
+                            {teacherIndicator}
+                        </div>
+                    )}
                 </div>
 
                 {role === "teacher" && (
                     <form onSubmit={SendTeacherMessage} style={{ display: "flex", gap: "8px", padding: "12px", borderTop: "1px solid #e5e7eb" }}>
                         <input
-                            onKeyUp={handleTeacherTyping}
-                            onBlur={handleTeacherStoppedTyping}
                             value={teacherInput}
-                            onChange={(e) => setTeacherInput(e.target.value)}
+                            onChange={(e) => {
+                                setTeacherInput(e.target.value);
+                                handleTeacherTyping();
+                            }}
                             placeholder="Skriv ett meddelande..."
                             style={{ flex: 1, padding: "9px 14px", borderRadius: "999px", border: "1px solid #e5e7eb", fontSize: "14px", outline: "none" }}
                         />
